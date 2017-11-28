@@ -1,0 +1,29 @@
+#mainNav {
+    background-color: #3b3838;
+}
+
+.btn-primary {
+    color: #fff;
+    border-color: #428bca;
+    background-color: #428bca;
+}
+
+#mainNav.navbar-shrink .navbar-brand {
+    font-size: 16px;
+    color: #428bca;
+}
+  .btn-primary.focus, .btn-primary:focus {
+    color: white;
+    border-color: #3875a8;
+    background-color: #3875a8; }
+  .btn-primary:hover {
+    color: white;
+    border-color: #3875a8;
+    background-color: #3875a8; }
+
+
+hr {
+    max-width: 50px;
+    border-width: 3px;
+    border-color: #428bca;
+}

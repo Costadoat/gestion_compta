@@ -1,0 +1,16 @@
+{% extends "pages/base.html" %}
+
+ <section>
+
+{% block title %}{% endblock %}
+{% block content %}
+    <h2> Suppression </h2>
+    <hr>
+    <div class="container">
+        <form action="" method="post">{% csrf_token %}
+            <p>Etes-vous sûr de vouloir supprimer l'intervention "{{ object }}"?</p>
+            <input type="submit" value="Confirm"/>
+        </form>
+    </div>
+{% endblock %}
+ </section>

@@ -1,0 +1,27 @@
+{% extends "pages/base.html" %}
+
+{% block content %}
+
+ <section>
+
+
+    <div class="container">
+        <h2> Interventions </h2>
+        <ul>
+            {% for intervention in object_list %}
+                <li>{{ intervention.client }} {{ intervention.date_facture }} | <a
+                        href="{% url 'intervention-update' intervention.pk %}"> Editer </a>
+                    <a href="{% url 'intervention-delete' intervention.pk %}"> Supprimer </a>
+                    <a href="{% url 'intervention-pdf' intervention.pk %}"> Afficher la facture
+            {% empty %}
+                <li>Pas encore d'intervention</li>
+            {% endfor %}
+
+        </ul>
+        <p><a href="{% url 'intervention-add' %}">Ajouter une intervention</a></p>
+        <p><a href="{% url 'client-add' %}">Ajouter un client </a>        </p>
+    </div>
+  </section>
+
+
+{% endblock %}

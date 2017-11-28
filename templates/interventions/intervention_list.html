@@ -1,0 +1,29 @@
+{% extends "pages/base.html" %}
+
+{% block content %}
+
+ <section>
+
+     <div class="container">
+
+        <p><a class="btn btn-primary" href="{% url 'client-list' %}"><i class="fa fa-address-book-o" aria-hidden="true"></i> Clients </a> &nbsp &nbsp <a class="btn btn-primary" href="mon_compte/1"> <i class="fa fa-user-o" aria-hidden="true"></i>Mon compte </a> </p>
+
+        <h2> Interventions </h2>
+        <ul>
+
+            {% for intervention in object_list %}
+                <li>{{ intervention.client }}  ({{ intervention.date_facture|date:"d/m/Y" }})
+                    <a class="btn btn-outline-primary bnt-sm" href="{% url 'intervention-update' intervention.pk %}"> <i class="fa fa-pencil" aria-hidden="true"></i> Editer </a>
+                    <a class="btn btn-outline-danger bnt-sm" href="{% url 'intervention-delete' intervention.pk %}">  <i class="fa fa-times" aria-hidden="true"></i> Supprimer </a>
+                    <a class="btn btn-outline-warning bnt-sm" href="{% url 'intervention-pdf' intervention.pk %}"> <i class="fa fa-file-pdf-o" aria-hidden="true"></i> Afficher la facture </a>
+            {% empty %}
+                <li>Pas encore d'intervention</li>
+            {% endfor %}
+
+        </ul>
+         <p><a class="btn btn-info" href="{% url 'intervention-add' %}"><i class="fa fa-plus-circle" aria-hidden="true"></i> Ajouter une intervention </a></p>
+    </div>
+  </section>
+
+
+{% endblock %}

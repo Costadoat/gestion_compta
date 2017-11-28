@@ -1,0 +1,29 @@
+{% extends "pages/base.html" %}
+
+{% block content %}
+
+ <section>
+
+
+    <div class="container">
+        <h2> Clients </h2>
+        <ul>
+            {% for client in object_list %}
+                <li>{{ client.nom }} &nbsp
+                    <a class="btn btn-outline-primary bnt-sm" href="{% url 'client-update' client.pk %}"> <i class="fa fa-pencil" aria-hidden="true"></i>Editer </a>
+                    <a class="btn btn-outline-danger bnt-sm" href="{% url 'client-delete' client.pk %}"> <i class="fa fa-times" aria-hidden="true"></i>Supprimer </a>
+            {% empty %}
+                <li>Pas encore de client </li>
+            {% endfor %}
+
+        </ul>
+        <p><a class="btn btn-info" href="{% url 'client-add' %}"><i class="fa fa-plus-circle" aria-hidden="true"></i>
+ Ajouter un client</a></p>
+     <input class="btn btn-success" type="submit" value="Save"/> <a class="btn btn-danger" href="{% url 'intervention-list' %}">Retour </a>
+
+    </div>
+
+  </section>
+
+
+{% endblock %}
