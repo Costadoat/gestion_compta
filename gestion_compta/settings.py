@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '0q#u04jbxjih+$@2+%yj7jbi=59+))bpdoxpxe#hdt)2i3sq22'
+SECRET_KEY = 'u)%%f)qb_7yt0_)rq1mdhnpj79%8onvr)1q!iefno)pw2fe+^2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -30,6 +30,8 @@ DEBUG = True
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Application definition
+
+ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'pages.apps.PagesConfig',
@@ -43,6 +45,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'gunicorn',
 ]
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -115,9 +124,9 @@ DATE_INPUT_FORMATS = ('%d-%m-%Y')
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '/django/gestion_compta/static/'
-# STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"), )
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"), ) # A desactiver pour le deploiement
 
-try:
-    from local_settings import *
-except ImportError:
-    pass
+#try:
+#    from local_settings import *
+#except ImportError:
+#    pass
