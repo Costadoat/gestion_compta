@@ -29,7 +29,7 @@ class Client(models.Model):
     nom = models.CharField(max_length=100)
     contact = models.CharField(max_length=100)
     adresse1 = models.CharField(max_length=100)
-    adresse2 = models.CharField(max_length=100)
+    adresse2 = models.CharField(max_length=100,blank=True)
     code_postal = models.CharField(max_length=100)
     ville = models.CharField(max_length=100)
     def __unicode__(self):
@@ -43,7 +43,7 @@ class Intervention(models.Model):
         return reverse('intervention-update', kwargs={'pk': self.pk})
 
     def __unicode__(self):
-        return "%s %s" % (self.client, self.date)
+        return "%s %s" % (self.client, self.date_facture)
 
 class Produit(models.Model):
     intervention = models.ForeignKey(Intervention)
@@ -51,4 +51,3 @@ class Produit(models.Model):
     date_produit = models.DateField(default=timezone.now)
     prix_unitaire = models.FloatField()
     quantite = models.FloatField()
-    tva = models.FloatField()

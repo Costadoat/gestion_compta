@@ -8,9 +8,11 @@ Desktop.ini
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
-#Dossier persos
+#Perso
 perso
 .idea
+logo.*
+
 
 # Windows Installer files
 *.cab
@@ -36,6 +38,7 @@ qrcode.svg
 qrcode.png
 Notes.txt
 local_settings.*
+settings.
 
 # Windows shortcuts
 *.lnk

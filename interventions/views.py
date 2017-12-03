@@ -122,29 +122,31 @@ class ClientDelete(DeleteView):
 
 def InterventionPDF(request, pk):
     intervention_pdf=Intervention.objects.get(pk=pk)
+    ref_facture='FA{0:06}'.format(intervention_pdf.pk)
     moi_pdf=moi.objects.get(pk=1)
     client_pdf=Client.objects.get(nom=intervention_pdf.client)
     # Create the HttpResponse object with the appropriate PDF headers.
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="Facture {}.pdf"'. format(pk)
+    response['Content-Disposition'] = 'attachment; filename="Facture {}.pdf"'. format(ref_facture)
 
     # Create the PDF object, using the response object as its "file."
     p = canvas.Canvas(response)
 
     # Draw things on the PDF. Here's where the PDF generation happens.
     # See the ReportLab documentation for the full list of functionality.
-    url_image = '/django/gestion_compta/static/pages/img/logo.png'
+    url_image = 'static/pages/img/logo.png'
     p.drawImage(url_image, 50, 700, width=122, height=60, mask='auto')
     p.setFont('VeraBd', 10)
-    p.drawString(350, 700, 'Facture {}'.format(pk))
+    ypos=750
+    p.drawString(350, ypos, 'Facture N° {}'.format(ref_facture))
     p.setFont('Vera', 10)
     date_echeance=intervention_pdf.date_facture+ datetime.timedelta(30)
     date_fact=intervention_pdf.date_facture.strftime('%d/%m/%Y')
     date_ech=date_echeance.strftime('%d/%m/%Y')
-    p.drawString(350, 680, 'Date')
-    p.drawString(350, 660, 'Echéance')
-    p.drawString(450, 680, date_fact)
-    p.drawString(450, 660, date_ech)
+    p.drawString(350, ypos-20, 'Date')
+    p.drawString(350, ypos-40, 'Echéance')
+    p.drawString(450, ypos-20, date_fact)
+    p.drawString(450, ypos-40, date_ech)
     p.setFont('VeraBd', 10)
     ypos=650
     xpos=50
@@ -176,7 +178,7 @@ def InterventionPDF(request, pk):
             ypos-=int
 
     p.setFont('VeraBd', 10)
-    ypos=600
+    ypos=650
     xpos=350
     p.drawString(xpos, ypos, client_pdf.nom)
     p.setFont('Vera', 10)
@@ -195,8 +197,9 @@ def InterventionPDF(request, pk):
             p.drawString(xpos+40, ypos, client_pdf.ville)
             ypos-=int
 
-    ypos=500
+    ypos-=20
     xpos=50
+    int=15
     p.setFont('Vera', 10)
     ypos-=int
     if (moi_pdf.nom_rib is not ""):
@@ -218,47 +221,47 @@ def InterventionPDF(request, pk):
             p.drawString(xpos, ypos, 'Code BIC: {}'.format(moi_pdf.code_bic_rib))
             ypos-=int
 
-    ypos-=150
+    ypos-=100
 
     width, height = A4
 
-    data= [['Description', 'Date', 'Prix unitaire', 'Quantite', 'TVA', 'Montant (TTC)']]
-    total_ht=0
-    total_tva=0
-    total_ttc=0
-    end_line=4
+    data= [['Description', 'Date', 'Prix unitaire', 'Quantite', 'Montant Net']]
+    total=0
+    end_line=2
 
     for produit in Produit.objects.filter(intervention=pk).order_by('date_produit'):
         end_line+=1
-        montant_ht=produit.prix_unitaire*produit.quantite
-        montant_tva=produit.prix_unitaire*produit.quantite*produit.tva/100
-        montant_ttc=produit.prix_unitaire*produit.quantite*(1+produit.tva/100)
-        total_ht+=montant_ht
-        total_tva+=montant_tva
-        total_ttc+=montant_ttc
-        data.append([produit.nom,produit.date_produit.strftime('%d/%m/%Y'),produit.prix_unitaire,produit.quantite,produit.tva,montant_ttc])
+        montant=produit.prix_unitaire*produit.quantite
+        total+=montant
+        data.append([produit.nom,produit.date_produit.strftime('%d/%m/%Y'),produit.prix_unitaire,produit.quantite,str(montant)+' €'])
 
-    data.append(["","","","","",""])
-    data.append(["","","","",'Total (HT)',montant_ht])
-    data.append(["","","","",'TVA 20%',montant_tva])
-    data.append(["","","","",'Total (TTC)',montant_ttc])
+    data.append(["","","","",""])
+    data.append(["","","",'Net à payer',str(total)+' €'])
 
-    table = Table(data, colWidths=[4. * cm, 3. * cm, 2.5 * cm, 2.5 * cm, 2. * cm, 3. * cm])
-    table.setStyle(TableStyle([('BACKGROUND',(0,0),(5,0),colors.gray), ('TEXTCOLOR',(0,0),(5,0),colors.white),
-                               ('FONT',(4,end_line),(5,end_line),'VeraBd'),('ALIGN', (1, 0), (5, end_line), 'CENTER')]))
+    table = Table(data, colWidths=[6. * cm, 3. * cm, 2.5 * cm, 2.5 * cm, 3. * cm])
+    table.setStyle(TableStyle([('BACKGROUND',(0,0),(4,0),colors.gray), ('TEXTCOLOR',(0,0),(4,0),colors.white),
+                               ('FONT',(3,end_line),(4,end_line),'VeraBd'),('ALIGN', (1, 0), (4, end_line), 'CENTER')]))
     table.wrapOn(p, width, height)
     table.drawOn(p, 50, ypos)
 
-    ypos-=20*end_line
-
+    ypos-=15*end_line
+    int=10
+    p.setFont('Vera', 6)
+    p.drawString(50, ypos, 'TVA non applicable, art. 293 B du CGI.')
+    ypos-=int
+    p.drawString(50, ypos, 'Dispensé d\'immatriculation en application de l\'article L.123-1-1 du code de commerce.')
+    ypos-=int
+    p.drawString(50, ypos, 'En cas de retard de paiement, une pénalité égale à 3 fois le taux d\'intérêt légal sera exigible (Décret 2009-138 du 9 février 2009).')
+    ypos-=int
+    p.drawString(50, ypos, 'Pour les professionnels, une indemnité minimum forfaitaire de 40 euros pour frais de recouvrement sera exigible (Décret 2012-1115 du 9 octobre 2012).')
+    ypos-=int
+    p.drawString(50, ypos, 'Pas d’escompte pour règlement par anticipation.')
+    ypos-=int
     p.drawString(50, ypos, 'Conditions de paiement: 30 jours')
-    ypos-=20
-    p.drawString(50, ypos, 'Echéance: {}'.format(date_ech))
-    ypos-=20
-    p.drawString(50, ypos, 'Intérêts de retard: 10 %')
+
+    p.setFont('Vera', 10)
     ypos-=20
     p.drawString(50, ypos, 'A l\'intention de : {}'.format(client_pdf.contact))
-    ypos-=20
 
     # Close the PDF object cleanly, and we're done.
     p.showPage()
