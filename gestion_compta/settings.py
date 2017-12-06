@@ -126,6 +126,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = '/django/gestion_compta/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"), ) # A desactiver pour le deploiement
 
+
+# A décommenter si vous utilisez un fichier local_settings.py pour vos paramètres personnels
 #try:
 #    from local_settings import *
 #except ImportError:
